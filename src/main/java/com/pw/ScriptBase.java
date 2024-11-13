@@ -12,7 +12,7 @@ public class ScriptBase {
     @BeforeAll
     static void lauchBrowser(){
         playwright = Playwright.create();
-        browser = playwright.chromium().launch(new BrowserType.LaunchOptions().setHeadless(false).setSlowMo(1000)); //show the browser
+        browser = playwright.chromium().launch(new BrowserType.LaunchOptions().setHeadless(true).setSlowMo(1000)); //show the browser
     }
 
     @AfterAll
