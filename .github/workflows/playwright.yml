@@ -2,9 +2,9 @@ name: Java CI
 
 on:
   push:
-    branches: [ main, master ]
+    branches: [main, master]
   pull_request:
-    branches: [ main, master ]
+    branches: [main, master]
 
 jobs:
   test:
@@ -12,69 +12,38 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Checkout del código
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # Configurar Java
       - name: Set up JDK
         uses: actions/setup-java@v4
         with:
-          distribution: 'temurin' # Puedes usar otras distribuciones como 'zulu', 'adopt'
-          java-version: '21'      # Cambia la versión de Java según tu proyecto
+          distribution: 'temurin'
+          java-version: '21'
 
-      # Instalar dependencias con Maven
       - name: Set up Maven
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: '21'
-          cache: 'maven'  # Cachear dependencias para acelerar el proceso
+          cache: 'maven'
 
       - name: Build with Maven
-        run: mvn clean install -DskipTests=true
+        run: mvn clean install -DskipTests
 
-      # Ejecutar pruebas con Allure
       - name: Run Tests with Allure
         run: mvn clean test io.qameta.allure:allure-maven:report
 
-      # Generar reporte de Allure
-      - name: Generate Allure Report
-        run: mvn allure:aggregate
+      - name: Generate Allure Aggregate
+        run: mvn io.qameta.allure:allure-maven:aggregate
 
-      # Instalar Allure Commandline para generar el reporte HTML
       - name: Install Allure Commandline
         run: |
           sudo apt-get update
           sudo apt-get install -y allure
 
-      # Publicar reporte de Allure como artefacto
       - name: Upload Allure Report
-        if: always() # Asegura que el paso se ejecute siempre
         uses: actions/upload-artifact@v4
         with:
           name: allure-report
           path: target/allure-report/
-          retention-days: 30
-
-      # Ejecutar pruebas
-     # - name: Run Tests
-      #  run: mvn test
-
-      # Publicar reporte de pruebas
-      - name: Upload Test Report
-        if: always() # Asegura que el paso se ejecute siempre
-        uses: actions/upload-artifact@v4
-        with:
-          name: test-report
-          path: target/surefire-reports/
-          retention-days: 30
-
-      # Publicar reporte de cobertura (usando JaCoCo)
-      - name: Upload Coverage Report
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: coverage-report
-          path: target/site/jacoco/
-          retention-days: 30
