@@ -34,9 +34,32 @@ jobs:
       - name: Build with Maven
         run: mvn clean install -DskipTests=true
 
+      # Ejecutar pruebas con Allure
+      - name: Run Tests with Allure
+        run: mvn test allure:report
+
+      # Generar reporte de Allure
+      - name: Generate Allure Report
+        run: mvn allure:aggregate
+
+      # Instalar Allure Commandline para generar el reporte HTML
+      - name: Install Allure Commandline
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y allure
+
+      # Publicar reporte de Allure como artefacto
+      - name: Upload Allure Report
+        if: always() # Asegura que el paso se ejecute siempre
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-report
+          path: target/allure-report/
+          retention-days: 30
+
       # Ejecutar pruebas
-      - name: Run Tests
-        run: mvn test
+     # - name: Run Tests
+      #  run: mvn test
 
       # Publicar reporte de pruebas
       - name: Upload Test Report
