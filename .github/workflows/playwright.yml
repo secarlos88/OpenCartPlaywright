@@ -36,7 +36,7 @@ jobs:
 
       # Ejecutar pruebas con Allure
       - name: Run Tests with Allure
-        run: mvn test allure:report
+        run: mvn clean test io.qameta.allure:allure-maven:report
 
       # Generar reporte de Allure
       - name: Generate Allure Report
